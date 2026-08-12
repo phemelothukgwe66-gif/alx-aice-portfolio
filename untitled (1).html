@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Daily Check-In Friend</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f9fafb;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .tracker {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      text-align: center;
+      padding: 12px;
+    }
+    th {
+      background: #e0f7fa;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+    input[type=checkbox] {
+      transform: scale(1.3);
+      cursor: pointer;
+    }
+    .progress {
+      height: 12px;
+      background: #eee;
+      border-radius: 10px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+    .bar {
+      height: 100%;
+      background: linear-gradient(90deg,#80deea,#4dd0e1);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    .score {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .popup {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1em;
+      color: #555;
+      animation: fadeIn 2s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="tracker">
+    <h2>Daily Check-In Friend</h2>
+    <table>
+      <tr>
+        <th>Habit</th>
+        <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
+      </tr>
+      <tr>
+        <td>Energy</td>
+        <td><input type="checkbox" data-habit="energy" data-day="1"></td>
+        <td><input type="checkbox" data-habit="energy" data-day="2"></td>
+        <td><input type="checkbox" data-habit="energy" data-day="3"></td>
+        <td><input type="checkbox" data-habit="energy" data-day="4"></td>
+        <td><input type="checkbox" data-habit="energy" data-day="5"></td>
+        <td><input type="checkbox" data-habit="energy" data-day="6"></td>
+        <td><input type="checkbox" data-habit="energy" data-day="7"></td>
+      </tr>
+      <tr>
+        <td>Mood</td>
+        <td><input type="checkbox" data-habit="mood" data-day="1"></td>
+        <td><input type="checkbox" data-habit="mood" data-day="2"></td>
+        <td><input type="checkbox" data-habit="mood" data-day="3"></td>
+        <td><input type="checkbox" data-habit="mood" data-day="4"></td>
+        <td><input type="checkbox" data-habit="mood" data-day="5"></td>
+        <td><input type="checkbox" data-habit="mood" data-day="6"></td>
+        <td><input type="checkbox" data-habit="mood" data-day="7"></td>
+      </tr>
+      <tr>
+        <td>Stress</td>
+        <td><input type="checkbox" data-habit="stress" data-day="1"></td>
+        <td><input type="checkbox" data-habit="stress" data-day="2"></td>
+        <td><input type="checkbox" data-habit="stress" data-day="3"></td>
+        <td><input type="checkbox" data-habit="stress" data-day="4"></td>
+        <td><input type="checkbox" data-habit="stress" data-day="5"></td>
+        <td><input type="checkbox" data-habit="stress" data-day="6"></td>
+        <td><input type="checkbox" data-habit="stress" data-day="7"></td>
+      </tr>
+      <tr>
+        <td>Social</td>
+        <td><input type="checkbox" data-habit="social" data-day="1"></td>
+        <td><input type="checkbox" data-habit="social" data-day="2"></td>
+        <td><input type="checkbox" data-habit="social" data-day="3"></td>
+        <td><input type="checkbox" data-habit="social" data-day="4"></td>
+        <td><input type="checkbox" data-habit="social" data-day="5"></td>
+        <td><input type="checkbox" data-habit="social" data-day="6"></td>
+        <td><input type="checkbox" data-habit="social" data-day="7"></td>
+      </tr>
+    </table>
+    <div class="progress"><div class="bar"></div></div>
+    <div class="score">Score: 0</div>
+    <div class="popup">Hey Phemelo, how are you feeling today?</div>
+  </div>
+
+  <script>
+    const checkboxes = document.querySelectorAll("input[type=checkbox]");
+    const bar = document.querySelector(".bar");
+    const scoreDisplay = document.querySelector(".score");
+    const sound = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+
+    checkboxes.forEach(cb => {
+      const key = cb.dataset.habit + cb.dataset.day;
+      cb.checked = localStorage.getItem(key) === "true";
+      cb.addEventListener("change", () => {
+        localStorage.setItem(key, cb.checked);
+        updateProgress();
+        if(cb.checked) sound.play();
+      });
+    });
+
+    function updateProgress() {
+      const total = checkboxes.length;
+      const checked = [...checkboxes].filter(cb => cb.checked).length;
+      bar.style.width = (checked / total * 100) + "%";
+      scoreDisplay.textContent = "Score: " + checked;
+      if(checked === total) {
+        confetti();
+      }
+    }
+
+    function confetti() {
+      const popup = document.querySelector(".popup");
+      popup.textContent = "🎉 Great job, full check-in this week!";
+      popup.style.color = "#4caf50";
+    }
+
+    updateProgress();
+  </script>
+</body>
+</html>
+
+
